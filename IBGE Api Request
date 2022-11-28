@@ -1,9 +1,6 @@
 class dataImesc:
     def __init__(self):
         
-        
-        
-        self.locs="N1[all]|N2[all]|N3[all]|N6[N3[21]]"
         self.dicio={129:"https://servicodados.ibge.gov.br/api/v3/agregados/291/periodos/-6/variaveis/143?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]&classificacao=194[0]",
                     150:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]]&classificacao=193[3434]",
                     151:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]]&classificacao=193[3435]",
@@ -11,8 +8,6 @@ class dataImesc:
                     153:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]}]&classificacao=193[3444]",
                     154:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]]&classificacao=193[3445]",
                     "teste":"https://servicodados.ibge.gov.br/api/v3/agregados/1301/periodos/2010/variaveis/615?localidades=N1[all]"}
-        self.Resposta=None
-        
         self.lista=[]
         self.serie=[]
         
@@ -120,14 +115,15 @@ class dataImesc:
         print(data_frame)
         
     def formato_dataimesc(self):
-        #Reshaping the DataFrame
         import pandas as pd
         dataframe=pd.melt(self.data_frame2,id_vars=["serie","abrangencia","localidade","nome"],value_vars=self.anos)
+        dataframe=dataframe[["serie","abrangencia","localidade","nome","value","variable"]]
+        dataframe.to_excel("excel2020.xlsx")
         print(dataframe)
         
 
 teste=dataImesc()
-teste.procurar_tabela(153)
+teste.procurar_tabela(154)
 teste.organiza()
 teste.transforma_em_pandas()
 teste.formato_dataimesc()
