@@ -120,7 +120,7 @@ class dataImesc:
         print(data_frame)
         
     def formato_dataimesc(self):
-        #
+        #Reshaping the DataFrame
         import pandas as pd
         dataframe=pd.melt(self.data_frame2,id_vars=["serie","abrangencia","localidade","nome"],value_vars=self.anos)
         print(dataframe)
