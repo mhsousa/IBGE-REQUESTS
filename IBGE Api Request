@@ -1,0 +1,133 @@
+class dataImesc:
+    def __init__(self):
+        
+        
+        
+        self.locs="N1[all]|N2[all]|N3[all]|N6[N3[21]]"
+        self.dicio={129:"https://servicodados.ibge.gov.br/api/v3/agregados/291/periodos/-6/variaveis/143?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]&classificacao=194[0]",
+                    150:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]]&classificacao=193[3434]",
+                    151:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]]&classificacao=193[3435]",
+                    152:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]]&classificacao=193[3439]",
+                    153:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]}]&classificacao=193[3444]",
+                    154:"https://servicodados.ibge.gov.br/api/v3/agregados/289/periodos/-6/variaveis/144?localidades=N1[all]|N2[all]|N3[all]|N6[N3[21]]]&classificacao=193[3445]",
+                    "teste":"https://servicodados.ibge.gov.br/api/v3/agregados/1301/periodos/2010/variaveis/615?localidades=N1[all]"}
+        self.Resposta=None
+        
+        self.lista=[]
+        self.serie=[]
+        
+    def procurar_tabela(self,numero_Tabela):
+        #Get the request
+        import requests as rq
+        self.tabela=numero_Tabela
+        self.Tabela=self.dicio[numero_Tabela]
+        self.Resposta=rq.get(self.Tabela)
+        self.Resposta=((self.Resposta).json())
+        
+    def organiza(self):
+        #Unpacking the JSON
+        import ast
+        self.results=self.Resposta
+        self.first=self.results[0]
+        self.second=self.first["resultados"]
+        self.third=self.second[0]
+        self.fouth=self.third["series"]
+        for i in self.fouth:
+            self.local=i['localidade']
+            self.result2=f'"localidade":{self.local["id"]}, "nome":"{self.local["nome"]}"'
+            self.serie.append(ast.literal_eval(f"{i['serie']}"))
+            print(self.result2)
+            self.result3="{"+self.result2+"}"
+            print(f"{i['serie']}")
+            self.lista.append(ast.literal_eval(self.result3))
+            print(self.result3)
+		     
+    def transforma_em_pandas(self):
+        import pandas as pd
+        data_Cidades=pd.DataFrame(self.lista)
+        self.data_Serie=pd.DataFrame(self.serie)
+        self.anos=list(self.data_Serie.columns)
+        data_frame=pd.concat([data_Cidades,self.data_Serie], axis=1)
+        data_frame.loc[(data_frame['localidade']==1 )& (data_frame["nome"]=="Brasil"), ['localidade']] = "BR"
+        data_frame.loc[(data_frame['localidade']==1 )& (data_frame["nome"]=="Norte"), ['localidade']] = "N"
+        data_frame.loc[(data_frame['localidade']==2 ), ['localidade']] = "NE"
+        data_frame.loc[(data_frame['localidade']==3 ), ['localidade']] = "SE"
+        data_frame.loc[(data_frame['localidade']==4 ), ['localidade']] = "S"
+        data_frame.loc[(data_frame['localidade']==5 ), ['localidade']] = "CO"
+        data_frame.loc[(data_frame['localidade']==11 ), ['localidade']] = "RO"
+        data_frame.loc[(data_frame['localidade']==12 ), ['localidade']] = "AC"
+        data_frame.loc[(data_frame['localidade']==13 ), ['localidade']] = "AM"
+        data_frame.loc[(data_frame['localidade']==14 ), ['localidade']] = "RR"
+        data_frame.loc[(data_frame['localidade']==15 ), ['localidade']] = "PA"
+        data_frame.loc[(data_frame['localidade']==16 ), ['localidade']] = "AP"
+        data_frame.loc[(data_frame['localidade']==17 ), ['localidade']] = "TO"
+        data_frame.loc[(data_frame['localidade']==21 ), ['localidade']] = "MA"
+        data_frame.loc[(data_frame['localidade']==22 ), ['localidade']] = "PI"
+        data_frame.loc[(data_frame['localidade']==23 ), ['localidade']] = "CE"
+        data_frame.loc[(data_frame['localidade']==24 ), ['localidade']] = "RN"
+        data_frame.loc[(data_frame['localidade']==25 ), ['localidade']] = "PB"
+        data_frame.loc[(data_frame['localidade']==26 ), ['localidade']] = "PE"
+        data_frame.loc[(data_frame['localidade']==27 ), ['localidade']] = "AL"
+        data_frame.loc[(data_frame['localidade']==28 ), ['localidade']] = "SE"
+        data_frame.loc[(data_frame['localidade']==29 ), ['localidade']] = "BA"
+        data_frame.loc[(data_frame['localidade']==31 ), ['localidade']] = "MG"
+        data_frame.loc[(data_frame['localidade']==32 ), ['localidade']] = "ES"
+        data_frame.loc[(data_frame['localidade']==33 ), ['localidade']] = "RJ"
+        data_frame.loc[(data_frame['localidade']==35 ), ['localidade']] = "SP"
+        data_frame.loc[(data_frame['localidade']==41 ), ['localidade']] = "PR"
+        data_frame.loc[(data_frame['localidade']==42 ), ['localidade']] = "SC"
+        data_frame.loc[(data_frame['localidade']==43 ), ['localidade']] = "RS"
+        data_frame.loc[(data_frame['localidade']==50 ), ['localidade']] = "MS"
+        data_frame.loc[(data_frame['localidade']==51 ), ['localidade']] = "MT"
+        data_frame.loc[(data_frame['localidade']==52 ), ['localidade']] = "GO"
+        data_frame.loc[(data_frame['localidade']==53 ), ['localidade']] = "DF"
+        data_frame.insert(loc=0, column="serie", value=self.tabela)
+        data_frame.insert(loc=1, column="abrangencia", value="4")
+        data_frame.loc[(data_frame['nome']=="Brasil" ), ['abrangencia']] = "1"
+        data_frame.loc[(data_frame['nome']=="Norte" ), ['abrangencia']] = "2"
+        data_frame.loc[(data_frame['nome']=="Nordeste" ), ['abrangencia']] = "2"
+        data_frame.loc[(data_frame['nome']=="Centro-Oeste" ), ['abrangencia']] = "2"
+        data_frame.loc[(data_frame['nome']=="Sul" ), ['abrangencia']] = "2"
+        data_frame.loc[(data_frame['nome']=="Sudeste" ), ['abrangencia']] = "2"
+        data_frame.loc[(data_frame['nome']=="Rondônia" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Acre" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Amazonas" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Roraima" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Pará" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Amapá" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Tocantins" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Maranhão" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Piauí" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Ceará" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Rio Grande do Norte"), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Paraíba" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Pernambuco" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Alagoas" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Sergipe" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Bahia" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Minas Gerais" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Espírito Santo" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Rio de Janeiro" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="São Paulo" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Paraná" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Santa Catarina" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Rio Grande do Sul" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Mato Grosso do Sul" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Mato Grosso" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Goiás" ), ['abrangencia']] = "3"
+        data_frame.loc[(data_frame['nome']=="Distrito Federal" ), ['abrangencia']] = "3"
+        self.data_frame2=data_frame
+        print(data_frame)
+        
+    def formato_dataimesc(self):
+        #
+        import pandas as pd
+        dataframe=pd.melt(self.data_frame2,id_vars=["serie","abrangencia","localidade","nome"],value_vars=self.anos)
+        print(dataframe)
+        
+
+teste=dataImesc()
+teste.procurar_tabela(153)
+teste.organiza()
+teste.transforma_em_pandas()
+teste.formato_dataimesc()
